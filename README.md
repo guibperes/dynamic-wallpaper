@@ -1,5 +1,5 @@
 # Dynamic Wallpaper
-X11 Dynamic background wallpaper CLI tool, minimal written in Shell Script.
+X11 Dynamic video background wallpaper CLI tool, minimal written in Shell Script.
 Uses [xwinwrap tool](https://github.com/ujjwal96/xwinwrap) and [mpv](https://mpv.io)
 
 ## Install
