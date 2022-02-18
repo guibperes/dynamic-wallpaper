@@ -1,0 +1,74 @@
+#!/usr/bin/env sh
+
+wallpaper_start() {
+	xwinwrap -fs -fdt -ni -b -nf -- \
+		mpv -wid WID --really-quiet --framedrop=vo --no-audio \
+		--panscan="1.0" --loop $WALLPAPER_PATH &
+}
+
+wallpaper_stop() {
+	killall xwinwrap
+}
+
+wallpaper_change() {
+	WALLPAPER_PATH=`realpath "$1"`
+	echo $WALLPAPER_PATH > "$WALLPAPER_DIR/.wallpaper"
+}
+
+menu_help() {
+	echo "Usage: dynamic-wallpaper
+       [ -s | --start         ] Start the wallpaper
+       [ -S | --stop          ] Stop the wallpaper
+       [ -r | --restart       ] Restart the wallpaper
+       [ -c | --change <FILE> ] Change wallpaper video file
+       [ -h | --help          ] Show this help message"
+
+        exit 0
+}
+
+menu_start() {
+	wallpaper_start
+	exit 0
+}
+
+menu_stop() {
+	wallpaper_stop
+	exit 0
+}
+
+menu_restart() {
+	wallpaper_stop
+	wallpaper_start
+	exit 0
+}
+
+menu_change() {
+	wallpaper_stop
+	wallpaper_change "$1"
+	wallpaper_start
+	exit 0
+}
+
+# Main script
+PARSED_ARGUMENTS=`getopt -n dynamic-wallpaper \
+	-o sSrhc: \
+	-l start,stop,restart,help,change: -- "$@"`
+
+WALLPAPER_DIR="`xdg-user-dir VIDEOS`/wallpapers"
+WALLPAPER_PATH=`cat $WALLPAPER_DIR/.wallpaper`
+
+eval set -- "$PARSED_ARGUMENTS"
+
+while :
+do
+	case "$1" in
+		-s | --start) menu_start; shift;;
+		-S | --stop) menu_stop; shift;;
+		-r | --restart) menu_restart; shift;;
+		-c | --change) menu_change "$2"; shift 2;;
+		-h | --help) menu_help; shift;;
+		--) shift; break;;
+		*) echo "Unexpected option: $1"; menu_help;;
+	esac
+done
+menu_help
