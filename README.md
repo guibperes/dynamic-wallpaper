@@ -62,3 +62,5 @@ Start wallpaper
 ```sh
 dynamic-wallpaper -s
 ```
+The `.wallpaper` file container the full path of video wallpaper file.
+To disable autostart remove `.config/autostart/dynamic-wallpaper.desktop` file.
